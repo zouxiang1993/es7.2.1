@@ -34,7 +34,7 @@ public class ParsedHistogram extends ParsedMultiBucketAggregation<ParsedHistogra
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
+    public List<? extends Histogram.Bucket> getBuckets() {
         return buckets;
     }
 
@@ -52,7 +52,7 @@ public class ParsedHistogram extends ParsedMultiBucketAggregation<ParsedHistogra
         return aggregation;
     }
 
-    static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Histogram.Bucket {
 
         private Double key;
 

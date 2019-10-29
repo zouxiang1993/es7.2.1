@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class InternalFilters extends InternalMultiBucketAggregation<InternalFilters, InternalFilters.InternalBucket> implements Filters {
-    public static class InternalBucket extends InternalMultiBucketAggregation.InternalBucket implements Bucket {
+    public static class InternalBucket extends InternalMultiBucketAggregation.InternalBucket implements Filters.Bucket {
 
         private final boolean keyed;
         private final String key;

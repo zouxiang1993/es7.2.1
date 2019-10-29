@@ -45,8 +45,8 @@ public class ParsedFilters extends ParsedMultiBucketAggregation<ParsedFilters.Pa
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends Filters.Bucket> getBuckets() {
+        return (List<? extends Filters.Bucket>) buckets;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ParsedFilters extends ParsedMultiBucketAggregation<ParsedFilters.Pa
         return aggregation;
     }
 
-    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Filters.Bucket {
 
         private String key;
 

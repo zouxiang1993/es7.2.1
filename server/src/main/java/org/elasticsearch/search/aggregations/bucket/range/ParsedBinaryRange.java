@@ -41,8 +41,8 @@ public class ParsedBinaryRange extends ParsedMultiBucketAggregation<ParsedBinary
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends Range.Bucket> getBuckets() {
+        return (List<? extends Range.Bucket>) buckets;
     }
 
     private static ObjectParser<ParsedBinaryRange, Void> PARSER =
@@ -59,7 +59,7 @@ public class ParsedBinaryRange extends ParsedMultiBucketAggregation<ParsedBinary
         return aggregation;
     }
 
-    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Range.Bucket {
 
         private String key;
         private String from;

@@ -43,8 +43,8 @@ public class ParsedRange extends ParsedMultiBucketAggregation<ParsedRange.Parsed
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends Range.Bucket> getBuckets() {
+        return (List<? extends Range.Bucket>) buckets;
     }
 
     protected static void declareParsedRangeFields(final ObjectParser<? extends ParsedRange, Void> objectParser,
@@ -67,7 +67,7 @@ public class ParsedRange extends ParsedMultiBucketAggregation<ParsedRange.Parsed
         return aggregation;
     }
 
-    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Range.Bucket {
 
         protected String key;
         protected double from = Double.NEGATIVE_INFINITY;

@@ -38,8 +38,8 @@ public class ParsedAdjacencyMatrix extends ParsedMultiBucketAggregation<ParsedAd
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends AdjacencyMatrix.Bucket> getBuckets() {
+        return (List<? extends AdjacencyMatrix.Bucket>) buckets;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ParsedAdjacencyMatrix extends ParsedMultiBucketAggregation<ParsedAd
         return aggregation;
     }
 
-    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements AdjacencyMatrix.Bucket {
 
         private String key;
 

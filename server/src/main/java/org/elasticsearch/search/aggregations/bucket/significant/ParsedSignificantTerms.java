@@ -30,6 +30,7 @@ import org.elasticsearch.common.xcontent.XContentParserUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.ParsedMultiBucketAggregation;
+import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,21 +56,21 @@ public abstract class ParsedSignificantTerms extends ParsedMultiBucketAggregatio
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends SignificantTerms.Bucket> getBuckets() {
+        return (List<? extends SignificantTerms.Bucket>) buckets;
     }
 
     @Override
-    public Bucket getBucketByKey(String term) {
+    public SignificantTerms.Bucket getBucketByKey(String term) {
         if (bucketMap == null) {
-            bucketMap = buckets.stream().collect(Collectors.toMap(Bucket::getKeyAsString, Function.identity()));
+            bucketMap = buckets.stream().collect(Collectors.toMap(MultiBucketsAggregation.Bucket::getKeyAsString, Function.identity()));
         }
-        return bucketMap.get(term);
+        return (SignificantTerms.Bucket) bucketMap.get(term);
     }
 
     @Override
-    public Iterator<Bucket> iterator() {
-        return buckets.stream().map(bucket -> (Bucket) bucket).collect(Collectors.toList()).iterator();
+    public Iterator<SignificantTerms.Bucket> iterator() {
+        return buckets.stream().map(bucket -> (SignificantTerms.Bucket) bucket).collect(Collectors.toList()).iterator();
     }
 
     @Override
@@ -77,7 +78,7 @@ public abstract class ParsedSignificantTerms extends ParsedMultiBucketAggregatio
         builder.field(CommonFields.DOC_COUNT.getPreferredName(), subsetSize);
         builder.field(InternalMappedSignificantTerms.BG_COUNT, supersetSize);
         builder.startArray(CommonFields.BUCKETS.getPreferredName());
-        for (Bucket bucket : buckets) {
+        for (MultiBucketsAggregation.Bucket bucket : buckets) {
             bucket.toXContent(builder, params);
         }
         builder.endArray();
@@ -103,7 +104,7 @@ public abstract class ParsedSignificantTerms extends ParsedMultiBucketAggregatio
                 new ParseField(InternalMappedSignificantTerms.BG_COUNT));
     }
 
-    public abstract static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public abstract static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements SignificantTerms.Bucket {
 
         protected long subsetDf;
         protected long subsetSize;

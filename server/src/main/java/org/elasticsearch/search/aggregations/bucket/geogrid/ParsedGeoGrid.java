@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 public abstract class ParsedGeoGrid extends ParsedMultiBucketAggregation<ParsedGeoGridBucket> implements GeoGrid {
 
     @Override
-    public List<? extends Bucket> getBuckets() {
+    public List<? extends GeoGrid.Bucket> getBuckets() {
         return buckets;
     }
 

@@ -53,13 +53,13 @@ public abstract class ParsedTerms extends ParsedMultiBucketAggregation<ParsedTer
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends Terms.Bucket> getBuckets() {
+        return (List<? extends Terms.Bucket>) buckets;
     }
 
     @Override
-    public Bucket getBucketByKey(String term) {
-        for (Bucket bucket : getBuckets()) {
+    public Terms.Bucket getBucketByKey(String term) {
+        for (Terms.Bucket bucket : getBuckets()) {
             if (bucket.getKeyAsString().equals(term)) {
                 return bucket;
             }
@@ -72,7 +72,7 @@ public abstract class ParsedTerms extends ParsedMultiBucketAggregation<ParsedTer
         builder.field(DOC_COUNT_ERROR_UPPER_BOUND_FIELD_NAME.getPreferredName(), getDocCountError());
         builder.field(SUM_OF_OTHER_DOC_COUNTS.getPreferredName(), getSumOfOtherDocCounts());
         builder.startArray(CommonFields.BUCKETS.getPreferredName());
-        for (Bucket bucket : getBuckets()) {
+        for (Terms.Bucket bucket : getBuckets()) {
             bucket.toXContent(builder, params);
         }
         builder.endArray();
@@ -88,7 +88,7 @@ public abstract class ParsedTerms extends ParsedMultiBucketAggregation<ParsedTer
                 SUM_OF_OTHER_DOC_COUNTS);
     }
 
-    public abstract static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public abstract static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Terms.Bucket {
 
         boolean showDocCountError = false;
         protected long docCountError;

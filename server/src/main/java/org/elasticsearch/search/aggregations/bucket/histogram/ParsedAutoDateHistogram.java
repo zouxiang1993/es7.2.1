@@ -48,8 +48,8 @@ public class ParsedAutoDateHistogram extends ParsedMultiBucketAggregation<Parsed
     }
 
     @Override
-    public List<? extends Bucket> getBuckets() {
-        return buckets;
+    public List<? extends Histogram.Bucket> getBuckets() {
+        return (List<? extends Histogram.Bucket>) buckets;
     }
 
     private static ObjectParser<ParsedAutoDateHistogram, Void> PARSER =
@@ -76,7 +76,7 @@ public class ParsedAutoDateHistogram extends ParsedMultiBucketAggregation<Parsed
     }
 
 
-    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Bucket {
+    public static class ParsedBucket extends ParsedMultiBucketAggregation.ParsedBucket implements Histogram.Bucket {
 
         private Long key;
 
