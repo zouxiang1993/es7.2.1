@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.zx.elasticsearch</groupId>
+    <artifactId>es7.2.1_lucene</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>server</module>
+    </modules>
+
+    <properties>
+        <versions.elasticsearch>7.2.1</versions.elasticsearch>
+        <versions.lucene>8.0.0</versions.lucene>
+        <versions.joda>2.10.2</versions.joda>
+        <versions.spatial4j>0.7</versions.spatial4j>
+        <versions.jts>1.15.0</versions.jts>
+        <versions.log4j>2.11.1</versions.log4j>
+        <versions.jna>4.5.1</versions.jna>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <meminitial>1024m</meminitial>
+                    <maxmem>1024m</maxmem>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
