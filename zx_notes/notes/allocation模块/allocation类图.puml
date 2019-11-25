@@ -1,0 +1,28 @@
+@startuml
+
+interface ShardsAllocator {
+    ---
+    // 将分配分配到节点
+    // 1. 分配尚未分配的节点
+    // 2. 如果某个分片不能再存在于一个节点，则进行重新分配
+    // 3. 重新分配以保持集群的平衡
+    +void allocate(RoutingAllocation allocation)
+
+    // 返回一个分片应该驻留在哪个节点上的决定
+    // 目前只是给客户端explain API用
+    +ShardAllocationDecision decideShardAllocation(ShardRouting shard, RoutingAllocation allocation)
+}
+
+class BalancedShardsAllocator implements ShardsAllocator{
+
+}
+
+
+class RoutingAllocation {
+    // 持有 当前分片的分配情况 和 下一步的分配决定
+    -AllocationDeciders deciders
+    -RoutingNodes routingNodes
+    -RoutingTable routingTable
+}
+
+@enduml
