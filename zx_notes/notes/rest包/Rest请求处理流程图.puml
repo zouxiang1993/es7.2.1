@@ -1,0 +1,18 @@
+@startuml
+participant RestController
+participant RestBulkAction
+participant NodeClient
+participant TransportBulkAction
+
+--> RestController : 客户端发起\n bulk请求
+RestController --> RestBulkAction : 根据PathTrie转发
+RestBulkAction --> RestBulkAction : prepareRequest \n将RestRequest转换成BulkRequest
+activate RestBulkAction
+    RestBulkAction --> NodeClient : bulk(BulkRequest, ..)
+    activate NodeClient
+        NodeClient --> NodeClient : transportAction(..) \n 将 BulkAction 转换为 TransportBulkAction \n 转换关系在ActionModele.setupActions()中定义
+        NodeClient --> TransportBulkAction :  execute(..)
+    deactivate NodeClient
+deactivate RestBulkAction
+
+@enduml
