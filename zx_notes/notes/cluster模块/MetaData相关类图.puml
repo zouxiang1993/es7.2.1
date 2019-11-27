@@ -1,0 +1,83 @@
+@startuml
+
+class MetaData{
+    集群元数据
+    --
+    -CoordinationMetaData coordinationMetaData
+    // 集群配置
+    -Settings settings
+    // 所有的索引
+    -ImmutableOpenMap<String, IndexMetaData> indices
+    -ImmutableOpenMap<String, IndexTemplateMetaData> templates
+    -String[] allIndices
+    // 根据索引名称或者别名查找
+    -SortedMap<String, AliasOrIndex> aliasAndIndexLookup
+}
+
+class CoordinationMetaData{
+    discovery相关的元数据
+    --
+    // TODO:
+}
+
+class IndexMetaData{
+    索引元数据
+    ---
+    // 用来路由的shards数目，一般情况下等于numberOfShards
+    // 只有在索引收缩(shrunk)后才会改变。
+    -int routingNumShards
+    // 默认为1，只有在索引分片数目修改之后才会改变。
+    -int routingFactor
+    // 改变路由函数，详见官网_routing： index.routing_partition_size
+    -int routingPartitionSize
+    ---
+    -int numberOfShards  // 分片数目
+    -int numberOfReplicas  // 副本数目
+    ---
+    -Index index
+    -long version
+    // 当前主分片的 轮数 (每次主分配分配时递增)
+    // (可能是集群重启，也可能是副本分片提升为主分片)
+    -long[] primaryTerms
+    -State state // Open 或者 Close
+    -ImmutableOpenMap<String, AliasMetaData> aliases
+    ---
+    // 索引配置
+    -Settings settings
+    -ImmutableOpenMap<String, MappingMetaData> mappings
+    ---
+    DiscoveryNodeFilters requireFilters;
+    DiscoveryNodeFilters includeFilters;
+    DiscoveryNodeFilters excludeFilters;
+    DiscoveryNodeFilters initialRecoveryFilters;
+    ---
+    ActiveShardCount waitForActiveShards
+}
+
+class IndexTemplateMetaData{
+}
+
+interface AliasOrIndex{
+    ---
+    // 是别名还是一个真正的索引
+    +boolean isAlias()
+    // 如果是索引，则返回自身，
+    // 如果是别名，则返回它关联的所有索引
+    +List<IndexMetaData> getIndices()
+}
+
+class AliasMetaData{
+}
+
+class MappingMetaData{
+
+}
+
+MetaData  *-- "1" CoordinationMetaData
+MetaData  *-- "1" Settings
+MetaData  *-- "n" IndexMetaData
+MetaData  *-- "n" IndexTemplateMetaData
+MetaData  *-- "n" AliasOrIndex
+IndexMetaData  *-- "n" AliasMetaData
+IndexMetaData  *-- "n" MappingMetaData
+@enduml
