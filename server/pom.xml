@@ -179,6 +179,12 @@
 
         <!-- 测试用 开始 -->
         <dependency>
+            <groupId>org.zx.elasticsearch.test</groupId>
+            <artifactId>framework</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.jimfs</groupId>
             <artifactId>jimfs</artifactId>
             <version>1.1</version>
