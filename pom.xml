@@ -11,6 +11,7 @@
     <modules>
         <module>server</module>
         <module>zx_notes</module>
+        <module>test</module>
     </modules>
 
     <properties>
@@ -21,6 +22,13 @@
         <versions.jts>1.15.0</versions.jts>
         <versions.log4j>2.11.1</versions.log4j>
         <versions.jna>4.5.1</versions.jna>
+        <versions.randomizedrunner>2.7.1</versions.randomizedrunner>
+        <versions.junit>4.12</versions.junit>
+        <versions.hamcrest>2.1</versions.hamcrest>
+        <versions.commonslogging>1.1.3</versions.commonslogging>
+        <versions.commonscodec>1.11</versions.commonscodec>
+        <versions.securemock>1.2</versions.securemock>
+        <versions.mocksocket>1.2</versions.mocksocket>
     </properties>
 
     <build>
