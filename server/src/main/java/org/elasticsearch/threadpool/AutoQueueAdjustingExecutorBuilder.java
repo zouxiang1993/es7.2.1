@@ -177,7 +177,7 @@ public final class AutoQueueAdjustingExecutorBuilder extends ExecutorBuilder<Aut
             info.getQueueSize() == null ? "unbounded" : info.getQueueSize());
     }
 
-    static final class AutoExecutorSettings extends ExecutorSettings {
+    static final class AutoExecutorSettings extends ExecutorBuilder.ExecutorSettings {
 
         final int size;
         final int initialQueueSize;

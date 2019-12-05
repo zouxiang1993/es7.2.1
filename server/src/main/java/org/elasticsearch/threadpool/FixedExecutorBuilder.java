@@ -109,7 +109,7 @@ public final class FixedExecutorBuilder extends ExecutorBuilder<FixedExecutorBui
             info.getQueueSize() == null ? "unbounded" : info.getQueueSize());
     }
 
-    static class FixedExecutorSettings extends ExecutorSettings {
+    static class FixedExecutorSettings extends ExecutorBuilder.ExecutorSettings {
 
         private final int size;
         private final int queueSize;

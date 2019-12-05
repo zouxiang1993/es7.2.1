@@ -119,7 +119,7 @@ public final class ScalingExecutorBuilder extends ExecutorBuilder<ScalingExecuto
             info.getKeepAlive());
     }
 
-    static class ScalingExecutorSettings extends ExecutorSettings {
+    static class ScalingExecutorSettings extends ExecutorBuilder.ExecutorSettings {
 
         private final int core;
         private final int max;
