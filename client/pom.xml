@@ -15,6 +15,7 @@
     <modules>
         <module>rest</module>
         <module>rest-high-level</module>
+        <module>sniffer</module>
     </modules>
 
 

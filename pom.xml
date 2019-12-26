@@ -33,6 +33,7 @@
         <versions.httpclient>4.5.8</versions.httpclient>
         <versions.httpcore>4.4.11</versions.httpcore>
         <versions.httpasyncclient>4.1.4</versions.httpasyncclient>
+        <versions.jackson>2.8.11</versions.jackson>
     </properties>
 
     <build>
