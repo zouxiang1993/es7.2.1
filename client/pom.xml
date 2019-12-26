@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>rest</module>
+        <module>rest-high-level</module>
     </modules>
 
 
