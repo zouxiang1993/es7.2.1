@@ -12,6 +12,7 @@
         <module>server</module>
         <module>zx_notes</module>
         <module>test</module>
+        <module>client</module>
     </modules>
 
     <properties>
@@ -29,6 +30,9 @@
         <versions.commonscodec>1.11</versions.commonscodec>
         <versions.securemock>1.2</versions.securemock>
         <versions.mocksocket>1.2</versions.mocksocket>
+        <versions.httpclient>4.5.8</versions.httpclient>
+        <versions.httpcore>4.4.11</versions.httpcore>
+        <versions.httpasyncclient>4.1.4</versions.httpasyncclient>
     </properties>
 
     <build>
