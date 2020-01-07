@@ -1,0 +1,36 @@
+@startuml
+
+interface LifecycleComponent{
+    +Lifecycle.State lifecycleState()
+    +void addLifecycleListener(LifecycleListener listener)
+    +void removeLifecycleListener(LifecycleListener listener)
+    +void start()
+    +void stop()
+    +void close()
+}
+
+abstract class AbstractLifecycleComponent implements LifecycleComponent{
+    // start(), stop(), close()方法的默认实现
+    // 在状态改变时触发LifecycleListener
+}
+
+abstract class LifecycleListener{
+    +void beforeStart()
+    +void afterStart()
+    +void beforeStop()
+    +void afterStop()
+    +void beforeClose()
+    +void afterClose()
+}
+
+class Lifecycle{
+    -State state
+}
+
+enum Lifecycle.State{
+    INITIALIZED,
+    STOPPED,
+    STARTED,
+    CLOSED
+}
+@enduml
