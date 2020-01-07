@@ -1,0 +1,207 @@
+@startuml
+skinparam class{
+    BackgroundColor<<Metadata>> PaleGreen
+    BorderColor<<Metadata>> SpringGreen
+}
+
+package lucene{
+    class FieldType {
+        // 是否存储
+        -boolean stored
+        // 是否分词
+        -boolean tokenized
+        // 倒排索引中存的内容
+        -IndexOptions indexOptions
+        // docvalues类型, 默认是无
+        -DocValuesType docValuesType = NONE
+        // 是否存储term vectors
+        -boolean storeTermVectors
+        // 是否禁用归一化值
+        -boolean omitNorms
+    }
+}
+
+package elasticsearch{
+    abstract class MappedFieldType extends FieldType{
+        // 是否有docvalues
+        -boolean docValues
+        // 索引时用的analyzer
+        -NamedAnalyzer indexAnalyzer
+        // 查询时用的analyzer
+        -NamedAnalyzer searchAnalyzer
+        -SimilarityProvider similarity
+        // 空值如何表示
+        -Object nullValue
+        -boolean eagerGlobalOrdinals
+        ---
+        默认值:
+        <font color="red"> tokenized = true
+        <font color="red"> indexOptions = DOCS_AND_FREQS_AND_POSITIONS
+        <font color="red"> stored = false
+        <font color="red"> storeTermVectors = false
+        <font color="red"> docValues = false
+        <font color="red"> omitNorms = false
+        ---
+        +boolean isSearchable()
+        +boolean isAggregatable()
+        +{abstract} Query termQuery(value)
+        // 改写成lucene中的BooleanQuery, 默认最多支持1024项
+        +Query termsQuery(values)
+        +{abstract} Query existsQuery(..)
+    }
+
+    class DateFieldType extends MappedFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> docValues = true
+        <font color="red"> omitNorms = true
+        ---
+        termQuery & rangeQuery :
+        如果没有docvalues, 则改写成LongPoint.newRangeQuery，
+        如果有docvalues, 则从LongPoint.newRangeQuery和
+        SortedNumericDocValuesField.newSlowRangeQuery选一个代价低的
+    }
+
+    class RangeFieldType extends MappedFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> docValues = true
+        <font color="red"> omitNorms = true
+    }
+
+    abstract class SimpleMappedFieldType extends MappedFieldType{
+    }
+
+    class IndexFieldType<<Metadata>> extends MappedFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = NONE
+        <font color="red"> stored = false
+        <font color="red"> omitNorms = true
+    }
+
+    class VersionFieldType<<Metadata>> extends MappedFieldType{
+        默认值:
+        <font color="red"> indexOptions = NONE
+        <font color="red"> docValues = true
+        <font color="red"> docValuesType = NUMERIC
+    }
+
+    class SourceFieldType<<Metadata>> extends MappedFieldType{
+        默认值:
+        <font color="red"> stored = true
+        <font color="red"> indexOptions = NONE
+        <font color="red"> omitNorms = true
+    }
+
+    class SeqNoFieldType<<Metadata>> extends SimpleMappedFieldType{
+        <font color="red" size=20>_seq_no 和 _primary_term !!!
+    }
+
+    abstract class TermBasedFieldType extends SimpleMappedFieldType{
+        被写入倒排索引的字段 indexOptions != NONE
+        ---
+        // 改写成lucene中的TermQuery
+        +Query termQuery(value)
+        // 改写成lucene中的TermInSetQuery
+        +Query termsQuery(values)
+    }
+
+    class NumberFieldType extends SimpleMappedFieldType{
+        -NumberType type
+        ---
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> docValues = true
+        <font color="red"> omitNorms = true
+        ---
+        termQuery, termsQuery, rangeQuery 会转换成lucene中的
+        IntPoint / LongPoint / FloatPoint / DoublePoint 的
+        newExactQuery / newSetQuery / newRangeQuery
+    }
+
+    class IpFieldType extends SimpleMappedFieldType{
+        ---
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> docValues = true
+        ---
+        改写成lucene中的InetAddressPoint来进行查询
+    }
+
+    class BooleanFieldType extends TermBasedFieldType{
+        将true和false表示成"T"和"F"存储在倒排索引中
+        ---
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> omitNorms = true
+    }
+
+    abstract class StringFieldType extends TermBasedFieldType{
+        term在索引内部的表示与外部相同，因此可以实现部分匹配。
+        例如: prefix, wildcard and fuzzy
+        ---
+        // 改写成lucene中的FuzzyQuery
+        +Query fuzzyQuery(..)
+        // 改写成lucene中的PrefixQuery
+        +Query prefixQuery(..)
+        // 改写成lucene中的WildcardQuery
+        +Query wildcardQuery(..)
+        // 改写成lucene中的RegexpQuery
+        +Query regexpQuery(..)
+        // 改写成lucene中的<b>TermRangeQuery</b>
+        +Query rangeQuery(..)
+    }
+
+    class IdFieldType<<Metadata>> extends TermBasedFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> stored = true
+        <font color="red"> omitNorms = true
+    }
+
+    class FieldNamesFieldType<<Metadata>> extends TermBasedFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> stored = false
+        <font color="red"> omitNorms = true
+    }
+
+    class KeywordFieldType extends StringFieldType{
+        -NamedAnalyzer normalizer
+        ---
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> omitNorms = true
+    }
+
+    class TextFieldType extends StringFieldType{
+        -boolean fielddata
+        ---
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> fielddata = false
+    }
+
+    class RoutingFieldType<<Metadata>> extends StringFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> stored = true
+        <font color="red"> omitNorms = true
+    }
+
+    class TypeFieldType<<Metadata>> extends StringFieldType{
+        默认值:
+        <font color="red"> tokenized = false
+        <font color="red"> indexOptions = DOCS
+        <font color="red"> stored = false
+        <font color="red"> omitNorms = true
+    }
+
+}
+@enduml

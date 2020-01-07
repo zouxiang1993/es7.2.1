@@ -1,0 +1,74 @@
+@startuml
+
+abstract class Mapper{
+    -String simpleName
+}
+
+class FieldAliasMapper extends Mapper{
+}
+
+abstract class FieldMapper extends Mapper{
+    #MappedFieldType fieldType
+    #MultiFields multiFields
+    #CopyTo copyTo
+}
+
+class ObjectMapper extends Mapper{
+
+}
+
+class RootObjectMapper extends ObjectMapper{
+
+}
+
+class DateFieldMapper extends FieldMapper{
+}
+
+class TextFieldMapper extends FieldMapper{
+}
+
+class KeywordFieldMapper extends FieldMapper{
+}
+
+abstract class MetadataFieldMapper extends FieldMapper{
+}
+
+class RangeFieldMapper extends FieldMapper{
+}
+
+class BooleanFieldMapper extends FieldMapper{
+}
+
+class NumberFieldMapper extends FieldMapper{
+}
+
+class BinaryFieldMapper extends FieldMapper{
+}
+
+class IpFieldMapper extends FieldMapper{
+}
+
+class IndexFieldMapper extends MetadataFieldMapper{
+}
+
+class TypeFieldMapper extends MetadataFieldMapper{
+}
+
+class IdFieldMapper extends MetadataFieldMapper{
+}
+
+class VersionFieldMapper extends MetadataFieldMapper{
+}
+
+class SourceFieldMapper extends MetadataFieldMapper{
+}
+
+class FieldNamesFieldMapper extends MetadataFieldMapper {
+}
+
+class SeqNoFieldMapper extends MetadataFieldMapper{
+}
+
+class RoutingFieldMapper extends MetadataFieldMapper{
+}
+@enduml
