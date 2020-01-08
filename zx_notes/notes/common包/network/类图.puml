@@ -1,0 +1,11 @@
+@startuml
+
+class NetworkService {
+    ---
+    // bind_host是外部应用可以访问ES集群的地址
+    +InetAddress[] resolveBindHostAddresses(String bindHosts[])
+    // publish_host是集群内部节点通信的地址
+    +InetAddress resolvePublishHostAddresses(String publishHosts[])
+}
+
+@enduml

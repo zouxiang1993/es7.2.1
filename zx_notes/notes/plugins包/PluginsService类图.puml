@@ -1,0 +1,24 @@
+@startuml
+class PluginsService{
+    ---
+    // 返回所有的插件和模块的信息
+    +PluginsAndModules info()
+    // 根据插件的类型来过滤
+    +<T> List<T> filterPlugins(Class<T> type)
+
+    // 获取插件中额外的配置项
+    +List<Setting<?>> getPluginSettings()
+    +List<String> getPluginSettingsFilter()
+
+    // 插件中配置的线程池
+    +List<ExecutorBuilder<?>> getExecutorBuilders(Settings settings)
+    // 插件中需要使用guice来进行依赖注入的模块
+    +Collection<Module> createGuiceModules()
+    // 利用guice注入、需要自动进行生命周期管理的对象
+    +Collection<Class<? extends LifecycleComponent>> getGuiceServiceClasses()
+
+    // 每次新索引被创建前被调用
+    +void onIndexModule(IndexModule indexModule)
+}
+
+@enduml
