@@ -1,0 +1,15 @@
+@startuml
+
+abstract class TransportMessage{
+    -TransportAddress remoteAddress
+}
+
+abstract class TransportRequest extends TransportMessage implements TaskAwareRequest{
+
+}
+
+abstract class TransportResponse extends TransportMessage{
+
+}
+
+@enduml
