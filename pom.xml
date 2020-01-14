@@ -13,6 +13,7 @@
         <module>zx_notes</module>
         <module>test</module>
         <module>client</module>
+        <module>modules</module>
     </modules>
 
     <properties>
@@ -34,6 +35,7 @@
         <versions.httpcore>4.4.11</versions.httpcore>
         <versions.httpasyncclient>4.1.4</versions.httpasyncclient>
         <versions.jackson>2.8.11</versions.jackson>
+        <versions.netty>4.1.35.Final</versions.netty>
     </properties>
 
     <build>
