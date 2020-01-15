@@ -162,7 +162,7 @@ public abstract class PeerFinder {
             final List<DiscoveryNode> knownPeers;
             if (active) {
                 assert leader.isPresent() == false : leader;
-                if (peersRequest.getSourceNode().isMasterNode()) {
+                if (peersRequest.getSourceNode().isMasterNode()) {  // 如果是主备节点
                     startProbe(peersRequest.getSourceNode().getAddress());
                 }
                 peersRequest.getKnownPeers().stream().map(DiscoveryNode::getAddress).forEach(this::startProbe);

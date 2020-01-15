@@ -9,8 +9,7 @@ InboundHandler  OutboundHandler EmptyTransportResponseHandler  FutureTransportRe
 
 CloseableConnection
 CompressibleBytesOutputStream
-ConnectionManager
-ConnectionProfile
+连接管理: ConnectionManager  ConnectionProfile
 PlainTransportFuture
 RemoteClusterAwareClient
 RemoteClusterAware
@@ -32,12 +31,8 @@ TransportInfo
 TransportInterceptor
 Transport
 TransportKeepAlive
-TransportLogger
 TransportMessageListener
 TransportRequestDeduplicator
 TransportRequestOptions
-TransportSettings
 Transports
-TransportStats
-TransportStatus
 ```

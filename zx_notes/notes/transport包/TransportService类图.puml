@@ -6,5 +6,9 @@ class TransportService {
     +sendRequest(DiscoveryNode node, final String action,TransportRequest, TransportResponseHandler handler)
     // 注册请求处理器, 当接收到其他节点的请求后如何处理。
     +registerRequestHandler(..)
+
+    +Connection openConnection(DiscoveryNode node)
+    +void connectToNode(DiscoveryNode node)
 }
+
 @enduml

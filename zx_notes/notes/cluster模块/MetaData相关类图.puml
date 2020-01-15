@@ -15,9 +15,13 @@ class MetaData{
 }
 
 class CoordinationMetaData{
-    discovery相关的元数据
+    集群协调相关的元数据
     --
-    // TODO:
+    -long term
+    -VotingConfiguration lastCommittedConfiguration
+    -VotingConfiguration lastAcceptedConfiguration
+    // 选举投票时的排除节点
+    -Set<VotingConfigExclusion> votingConfigExclusions
 }
 
 class IndexMetaData{
@@ -36,7 +40,7 @@ class IndexMetaData{
     ---
     -Index index
     -long version
-    // 当前主分片的 轮数 (每次主分配分配时递增)
+    // 每个分片组中 当前主分片的 轮数 (每次主分片分配时递增)
     // (可能是集群重启，也可能是副本分片提升为主分片)
     -long[] primaryTerms
     -State state // Open 或者 Close
@@ -52,6 +56,13 @@ class IndexMetaData{
     DiscoveryNodeFilters initialRecoveryFilters;
     ---
     ActiveShardCount waitForActiveShards
+}
+
+class Index{
+    ---
+    // 索引名称
+    -String name
+    -String uuid
 }
 
 class IndexTemplateMetaData{
@@ -73,9 +84,22 @@ class MappingMetaData{
 
 }
 
+class VotingConfigExclusion{
+    -String nodeId
+    -String nodeName
+}
+
+class VotingConfiguration {
+    // 表示更改集群状态时，需要哪些节点投票
+    -Set<String> nodeIds
+}
+
 MetaData  *-- "1" CoordinationMetaData
+CoordinationMetaData *-- "n" VotingConfigExclusion
+CoordinationMetaData *-- VotingConfiguration
 MetaData  *-- "1" Settings
 MetaData  *-- "n" IndexMetaData
+IndexMetaData -- Index
 MetaData  *-- "n" IndexTemplateMetaData
 MetaData  *-- "n" AliasOrIndex
 IndexMetaData  *-- "n" AliasMetaData

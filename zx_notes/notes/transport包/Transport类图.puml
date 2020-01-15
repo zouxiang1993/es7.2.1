@@ -2,19 +2,15 @@
 
 interface Transport {
     ---
-    // 注册一个请求处理器
+    // 注册一个请求处理器, 处理接收到的请求
     +void registerRequestHandler
     +getRequestHandler(String action)
+    // 建立到某个节点的连接 (默认13个tcp连接)
+    +openConnection(DiscoveryNode, ConnectionProfile, ActionListener<Connection>)
 
     +void setMessageListener(TransportMessageListener listener)
     +BoundTransportAddress boundAddress()
     +Map<String, BoundTransportAddress> profileBoundAddresses()
-
-    +Releasable openConnection(..)
-}
-
-abstract class TcpTransport implements Transport {
-
 }
 
 interface Connection{
@@ -22,14 +18,31 @@ interface Connection{
     ---
     // 获取远端节点
     +DiscoveryNode getNode()
-    // 发送请求
-    +void sendRequest(...)
+    // 发送请求，Options中可以指定使用哪种类型的tcp连接
+    +void sendRequest(long requestId, String action, TransportRequest, TransportRequestOptions)
     ...
 }
 
-abstract class CloseableConnection implements Connection
+class ConnectionProfile {
+    // 表示到一个节点的连接配置
+    ---
+    // tcp连接总数
+    +int numConnections
+    // 每种类型的连接 的句柄
+    +List<ConnectionTypeHandle> handles
 
-class NodeChannels extends CloseableConnection{
+    ...
 }
 
+class ConnectionTypeHandle{
+
+    ---
+    // 从给定的集合中轮询选择一个给定类型的tcp连接
+    +T getChannel(List<T> channels)
+}
+
+class ConnectionManager {
+}
+
+ConnectionProfile *-- "n" ConnectionTypeHandle
 @enduml

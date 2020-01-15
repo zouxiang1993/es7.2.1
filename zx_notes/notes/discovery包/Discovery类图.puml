@@ -1,0 +1,41 @@
+@startuml
+
+interface ClusterStatePublisher {
+    ---
+    // 只能在master节点上调用, 将所有对集群状态的修改发布到其他所有节点
+    +void publish(ClusterChangedEvent, ActionListener<Void> publishListener, AckListener)
+}
+
+interface Discovery extends  ClusterStatePublisher {
+    ---
+    +DiscoveryStats stats()
+    // 触发第一次的join 加入集群
+    +void startInitialJoin()
+}
+
+class ZenDiscovery implements Discovery {
+    // 老版本的实现
+}
+
+class Coordinator implements Discovery {
+    // ES 7.0+以后的新实现
+}
+
+abstract class PeerFinder{
+
+}
+
+class CoordinatorPeerFinder extends PeerFinder{
+
+}
+
+interface TransportAddressConnector {
+    // 识别给定地址上节点的身份，如果它是主备节点，则与他建立连接
+    +void connectToRemoteMasterNode(TransportAddress, ActionListener listener)
+}
+
+class HandshakingTransportAddressConnector implements TransportAddressConnector {
+
+}
+
+@enduml

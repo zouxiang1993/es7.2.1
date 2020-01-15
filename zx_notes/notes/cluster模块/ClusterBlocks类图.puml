@@ -1,0 +1,40 @@
+@startuml
+
+class ClusterBlocks {
+    // 表示当前集群层面和索引层面的阻塞
+    // 以防止对集群的脏操作
+    ---
+    // 集群层面的阻塞
+    Set<ClusterBlock> global
+    // 每个索引上的阻塞
+    Map<String, Set<ClusterBlock>> indicesBlocks
+}
+
+class ClusterBlock{
+    ---
+    -int id
+    -String uuid
+    -EnumSet<ClusterBlockLevel> levels
+    // 是否可重试
+    -boolean retryable
+    -boolean disableStatePersistence
+    -boolean allowReleaseResources
+    // HTTP 状态码
+    -RestStatus status
+}
+
+enum ClusterBlockLevel{
+    ---
+    // 阻塞读操作
+    READ
+    // 阻塞写操作
+    WRITE
+    // 阻塞对集群元数据的读操作
+    METADATA_READ
+    // 阻塞对集群元数据的写操作
+    METADATA_WRITE
+}
+
+ClusterBlocks *-- "n" ClusterBlock
+
+@enduml
