@@ -1,0 +1,53 @@
+@startuml
+
+interface ClusterStateTaskConfig {
+    TimeValue timeout()
+    Priority priority()
+}
+
+interface ClusterStateTaskExecutor<T> {
+    ---
+    // 在当前的集群状态的基础上，执行一系列的更新任务。
+    ClusterTasksResult<T> execute(ClusterState currentState, List<T> tasks)
+    // 是否只应该在master上运行
+    boolean runOnlyOnMaster()
+    // 集群状态发布之后的回调函数
+    void clusterStatePublished(ClusterChangedEvent clusterChangedEvent)
+}
+
+interface ClusterStateTaskListener {
+    ---
+    // 执行失败时的回调函数
+    void onFailure(String source, Exception e)
+    void onNoLongerMaster(String source)
+    // 全部处理完毕之后的回调函数
+    void clusterStateProcessed(String source, ClusterState oldState, ClusterState newState)
+}
+
+abstract class ClusterStateUpdateTask implements ClusterStateTaskConfig, ClusterStateTaskExecutor, ClusterStateTaskListener {
+    ---
+    子类中主要要实现以下几个方法:
+    // 更新集群状态
+    abstract ClusterState execute(ClusterState currentState)
+    // 执行失败时的回调函数
+    void onFailure(String source, Exception e)
+    // 全部处理完毕之后的回调函数
+    void clusterStateProcessed(String source, ClusterState oldState, ClusterState newState)
+}
+
+interface AckedClusterStateTaskListener extends ClusterStateTaskListener {
+    ---
+    // 期望得到哪个节点的ack
+    boolean mustAck(DiscoveryNode discoveryNode)
+    // 收到所有的节点的ack之后的回调
+    void onAllNodesAcked(@Nullable Exception e)
+    // 超时之后的回调函数
+    void onAckTimeout()
+    // 超时时间
+    TimeValue ackTimeout()
+}
+
+abstract class AckedClusterStateUpdateTask<Response> extends ClusterStateUpdateTask implements AckedClusterStateTaskListener {
+
+}
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+
+abstract class PrioritizedRunnable implements Runnable {
+    Priority priority
+}
+
+abstract class SourcePrioritizedRunnable extends PrioritizedRunnable {
+    String source
+}
+
+abstract class BatchedTask extends SourcePrioritizedRunnable {
+    ---
+    // 是否已经处理
+    AtomicBoolean processed;
+    // 这里的类型应该是 ClusterStateTaskExecutor
+    Object batchingKey
+    // 被包装的任务，这里的类型应该是 ClusterStateUpdateTask
+    Object task
+}
+
+class UpdateTask extends BatchedTask {
+    ClusterStateTaskListener listener
+}
+
+@enduml

@@ -61,6 +61,7 @@ public abstract class TaskBatcher {
         assert tasks.stream().allMatch(t -> t.batchingKey == firstTask.batchingKey) :
             "tasks submitted in a batch should share the same batching key: " + tasks;
         // convert to an identity map to check for dups based on task identity
+        // 转换成map, ClusterStateUpdateTask 到 BatchedTask的映射关系。
         final Map<Object, BatchedTask> tasksIdentity = tasks.stream().collect(Collectors.toMap(
             BatchedTask::getTask,
             Function.identity(),

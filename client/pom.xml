@@ -12,6 +12,18 @@
     <groupId>org.zx.elasticsearch.client</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>12</source>
+                    <target>12</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <modules>
         <module>rest</module>
         <module>rest-high-level</module>

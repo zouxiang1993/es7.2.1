@@ -1,0 +1,32 @@
+@startuml
+
+class MasterService {
+    只有master节点才会执行这个类中的方法
+    ---
+    // 用来存储当前的集群状态
+    Supplier<ClusterState> clusterStateSupplier
+    // 用来执行集群状态的更新任务
+    PrioritizedEsThreadPoolExecutor threadPoolExecutor
+    // 用来发布新的集群状态
+    ClusterStatePublisher clusterStatePublisher
+    // 将多个更新任务合并执行 ？？
+    Batcher taskBatcher
+    --
+    // 提交一个更新集群状态的任务
+    void submitStateUpdateTask(String source, T updateTask)
+}
+
+
+class ClusterApplierService {
+    主节点和从节点都会应用集群状态，因此都会
+    ---
+    // 用来执行应用集群状态的任务
+    PrioritizedEsThreadPoolExecutor threadPoolExecutor
+    // 三种优先级的集群状态应用处理器
+    Collection<ClusterStateApplier> clusterStateAppliers
+    // 集群状态监听器
+    Collection<ClusterStateListener> clusterStateListeners
+
+}
+
+@enduml

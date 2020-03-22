@@ -774,6 +774,7 @@ public class MasterService extends AbstractLifecycleComponent {
     public <T> void submitStateUpdateTasks(final String source,
                                            final Map<T, ClusterStateTaskListener> tasks, final ClusterStateTaskConfig config,
                                            final ClusterStateTaskExecutor<T> executor) {
+        // 这里的泛型参数T 应该是ClusterStateUpdateTask或其子类
         if (!lifecycle.started()) {
             return;
         }
