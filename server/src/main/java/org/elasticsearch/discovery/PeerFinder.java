@@ -110,7 +110,7 @@ public abstract class PeerFinder {
 
         transportService.registerRequestHandler(REQUEST_PEERS_ACTION_NAME, Names.GENERIC, false, false,
             PeersRequest::new,
-            (request, channel, task) -> channel.sendResponse(handlePeersRequest(request)));
+            (request, channel, task) -> channel.sendResponse(handlePeersRequest(request))); // 注册请求处理器
 
         transportService.registerRequestHandler(UnicastZenPing.ACTION_NAME, Names.GENERIC, false, false,
             UnicastZenPing.UnicastPingRequest::new, new Zen1UnicastPingRequestHandler());
@@ -219,7 +219,7 @@ public abstract class PeerFinder {
     public interface TransportAddressConnector {
         /**
          * Identify the node at the given address and, if it is a master node and not the local node then establish a full connection to it.
-         * 与一个节点握手(建立1个TCP连接)，如果发现它是主备节点，则与之建立完整的连接(13个TCP连接)
+         * 与给定的节点握手(只需要建立一个TCP连接)。如果它是主备节点，则建立完整的连接(默认13个TCP连接)。
          */
         void connectToRemoteMasterNode(TransportAddress transportAddress, ActionListener<DiscoveryNode> listener);
     }
@@ -253,7 +253,6 @@ public abstract class PeerFinder {
     }
 
     /**
-     * 如果有peer因为断开连接而被移除，则返回true；否则返回false。
      * @return whether any peers were removed due to disconnection
      */
     private boolean handleWakeUp() {
@@ -266,7 +265,6 @@ public abstract class PeerFinder {
             return peersRemoved;
         }
 
-        // 对lastAcceptedNodes(之前集群状态中的所有主备节点)和 providedAddresses(所有人工配置的种子节点) 进行探测(startProbe)。
         logger.trace("probing master nodes from cluster state: {}", lastAcceptedNodes);
         for (ObjectCursor<DiscoveryNode> discoveryNodeObjectCursor : lastAcceptedNodes.getMasterNodes().values()) {
             startProbe(discoveryNodeObjectCursor.value.getAddress());

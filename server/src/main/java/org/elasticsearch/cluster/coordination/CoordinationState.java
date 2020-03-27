@@ -44,10 +44,10 @@ public class CoordinationState {
 
     private final DiscoveryNode localNode;
 
-    // persisted state
+    // persisted state 当前节点的持久化状态
     private final PersistedState persistedState;
 
-    // transient state
+    // transient state 当前节点的非持久化状态
     private VoteCollection joinVotes;
     private boolean startedJoinSinceLastReboot;
     private boolean electionWon;
@@ -445,12 +445,12 @@ public class CoordinationState {
     public interface PersistedState {
 
         /**
-         * Returns the current term
+         * Returns the current term  当前已知的最后一个任期号
          */
         long getCurrentTerm();
 
         /**
-         * Returns the last accepted cluster state
+         * Returns the last accepted cluster state   ClusterState就相当于raft中的复制日志的角色。
          */
         ClusterState getLastAcceptedState();
 

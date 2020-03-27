@@ -1,0 +1,24 @@
+@startuml
+
+interface JoinAccumulator {
+    ---
+    // 收到其他节点的join请求后，应该如何处理。
+    void handleJoinRequest(DiscoveryNode sender, JoinCallback joinCallback)
+}
+
+class InitialJoinAccumulator implements JoinAccumulator {
+    此时节点还在初始化阶段，直接回复join失败。
+}
+
+class FollowerJoinAccumulator implements JoinAccumulator {
+    此时节点是follower，直接回复不应该向一个follower发起join请求。
+}
+
+class CandidateJoinAccumulator implements JoinAccumulator {
+    // TODO：cadidate状态下的两种不同行为？？
+}
+
+class LeaderJoinAccumulator implements JoinAccumulator {
+    // TODO: master的处理
+}
+@enduml

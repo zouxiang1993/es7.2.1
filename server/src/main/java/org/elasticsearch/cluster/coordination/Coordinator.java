@@ -532,7 +532,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
             peerFinder.activate(coordinationState.get().getLastAcceptedState().nodes());
             clusterFormationFailureHelper.start();
 
-            if (getCurrentTerm() == ZEN1_BWC_TERM) {
+            if (getCurrentTerm() == ZEN1_BWC_TERM) { // ES6-->ES7 滚动升级的处理。
                 discoveryUpgradeService.activate(lastKnownLeader, coordinationState.get().getLastAcceptedState());
             }
 
