@@ -90,10 +90,10 @@ public class ElectionSchedulerFactory {
         this.random = random;
         this.threadPool = threadPool;
 
-        initialTimeout = ELECTION_INITIAL_TIMEOUT_SETTING.get(settings);
-        backoffTime = ELECTION_BACK_OFF_TIME_SETTING.get(settings);
-        maxTimeout = ELECTION_MAX_TIMEOUT_SETTING.get(settings);
-        duration = ELECTION_DURATION_SETTING.get(settings);
+        initialTimeout = ELECTION_INITIAL_TIMEOUT_SETTING.get(settings); // 默认100ms
+        backoffTime = ELECTION_BACK_OFF_TIME_SETTING.get(settings); // 默认100ms
+        maxTimeout = ELECTION_MAX_TIMEOUT_SETTING.get(settings);    // 默认10秒
+        duration = ELECTION_DURATION_SETTING.get(settings);     // 默认500ms
 
         if (maxTimeout.millis() < initialTimeout.millis()) {
             throw new IllegalArgumentException(new ParameterizedMessage("[{}] is [{}], but must be at least [{}] which is [{}]",
@@ -119,6 +119,7 @@ public class ElectionSchedulerFactory {
     }
 
     /**
+     * 随机生成一个正整数: [0, upperBound]区间内
      * @param randomNumber a randomly-chosen long
      * @param upperBound   inclusive upper bound
      * @return a number in the range (0, upperBound]

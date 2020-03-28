@@ -35,11 +35,11 @@ import java.io.IOException;
  * source node.
  */
 public class Join implements Writeable {
-    private final DiscoveryNode sourceNode;
-    private final DiscoveryNode targetNode;
-    private final long term;
-    private final long lastAcceptedTerm;
-    private final long lastAcceptedVersion;
+    private final DiscoveryNode sourceNode; // 发起投票的源节点。即raft RequetstVote RPC中的 candidateId
+    private final DiscoveryNode targetNode; // 请求的目标节点。即向哪个节点请求投票
+    private final long term;  // 这是哪一轮的选票。即raft RequestVote RPC中的 term
+    private final long lastAcceptedTerm; // 。即raft RequestVote RPC中的 lastLogTerm
+    private final long lastAcceptedVersion; // 。即raft RequestVote RPC中的 lastLogIndex
 
     public Join(DiscoveryNode sourceNode, DiscoveryNode targetNode, long term, long lastAcceptedTerm, long lastAcceptedVersion) {
         assert term >= 0;
