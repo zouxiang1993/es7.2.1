@@ -1,0 +1,16 @@
+@startuml
+
+class TaskManager {
+    // 任务管理器
+    ---
+    // 将一个请求注册成一个任务
+    +Task register(String type, String action, TaskAwareRequest request)
+    // 取消一个正在执行的任务
+    +boolean cancel(CancellableTask task, String reason, Runnable listener)
+    // 注销一个任务
+    Task unregister(Task task)
+    // 将一个任务的结果存储到 .tasks 索引中
+    void storeResult(Task task, Response response, ActionListener<Response> listener)
+}
+
+@enduml

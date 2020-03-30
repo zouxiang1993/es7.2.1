@@ -1,0 +1,42 @@
+@startuml
+
+
+class ConnectionManager {
+    // 连接管理器
+    ---
+    // 创建到一个节点的连接(默认有13个TCP连接)
+    +Transport.Connection openConnection(DiscoveryNode node, ConnectionProfile connectionProfile)
+    // 获取到一个节点的连接
+    +Transport.Connection getConnection(DiscoveryNode node)
+}
+
+interface Connection {
+    org.elasticsearch.transport.Transport.Connection
+    表示到一个节点的单向的连接。
+    ---
+    // 目标节点
+    +DiscoveryNode getNode()
+    // 发送请求
+    +void sendRequest(... TransportRequest request ...)
+}
+
+class NodeChannels implements Connection
+
+interface TcpChannel {
+    表示一个TCP连接
+}
+
+
+
+class ConnectionProfile {
+    连接的配置文件。
+    定义一个Connection中具体有多少种类的连接，以及每种连接的数量
+    向一个节点发送请求时，首先要根据连接的类型TransportRequestOptions.Type
+    来获取该类型的所有连接，然后用轮询的方式选择一个连接来发送请求。
+    ---
+}
+
+ConnectionManager -right-- Connection : 管理 >
+NodeChannels "1" *-- "默认13个" TcpChannel : 包含 >
+(NodeChannels, TcpChannel) .. ConnectionProfile : 配置
+@enduml

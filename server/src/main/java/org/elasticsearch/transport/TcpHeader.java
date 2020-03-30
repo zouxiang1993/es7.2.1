@@ -24,12 +24,15 @@ import org.elasticsearch.common.io.stream.StreamOutput;
 
 import java.io.IOException;
 
+/**
+ * ES自定义协议的请求头格式。
+ */
 public class TcpHeader {
-    public static final int MARKER_BYTES_SIZE = 2 * 1;
+    public static final int MARKER_BYTES_SIZE = 2 * 1; // 即 ES 两个字符
 
-    public static final int MESSAGE_LENGTH_SIZE = 4;
+    public static final int MESSAGE_LENGTH_SIZE = 4;   // 4字节的int: 消息长度
 
-    public static final int REQUEST_ID_SIZE = 8;
+    public static final int REQUEST_ID_SIZE = 8;  // 请求ID
 
     public static final int STATUS_SIZE = 1;
 

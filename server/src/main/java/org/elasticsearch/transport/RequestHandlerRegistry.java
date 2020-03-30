@@ -28,11 +28,11 @@ import java.io.IOException;
 
 public class RequestHandlerRegistry<Request extends TransportRequest> {
 
-    private final String action;
-    private final TransportRequestHandler<Request> handler;
-    private final boolean forceExecution;
-    private final boolean canTripCircuitBreaker;
-    private final String executor;
+    private final String action; // action名称
+    private final TransportRequestHandler<Request> handler; // 请求处理器
+    private final boolean forceExecution; // 是否必须执行(当线程池队列满的时候，不会被线程池拒绝，而是不断的重试加入队列)
+    private final boolean canTripCircuitBreaker; // 是否能触发断路器
+    private final String executor;  // 线程池名称
     private final TaskManager taskManager;
     private final Writeable.Reader<Request> requestReader;
 
@@ -57,6 +57,7 @@ public class RequestHandlerRegistry<Request extends TransportRequest> {
     }
 
     public void processMessageReceived(Request request, TransportChannel channel) throws Exception {
+        // 注册到任务管理器中
         final Task task = taskManager.register(channel.getChannelType(), action, request);
         boolean success = false;
         try {

@@ -93,6 +93,7 @@ public interface Transport extends LifecycleComponent {
 
     /**
      * A unidirectional connection to a {@link DiscoveryNode}
+     * 表示一个单向的连接，可以发送请求
      */
     interface Connection extends Closeable {
         /**

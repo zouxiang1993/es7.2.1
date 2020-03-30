@@ -27,6 +27,7 @@ public final class TransportStatus {
     private static final byte STATUS_HANDSHAKE = 1 << 3;
 
     public static boolean isRequest(byte value) {
+        // 0表示这是一条请求消息，1表示这是一条响应消息。
         return (value & STATUS_REQRES) == 0;
     }
 

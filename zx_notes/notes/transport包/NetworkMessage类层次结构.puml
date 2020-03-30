@@ -1,0 +1,61 @@
+@startuml
+
+abstract class NetworkMessage {
+    表示一条传输层的消息
+    ---
+    Version version
+    // 作用??
+    ThreadContext threadContext
+    // ??
+    ThreadContext.StoredContext storedContext
+    // 请求的id
+    long requestId
+    // 几个状态位, 见 TransportStatus
+    byte status
+}
+
+abstract class OutboundMessage extends NetworkMessage {
+    出站消息
+    ---
+    // 消息体
+    Writeable message
+}
+
+class OutboundMessage.Request extends OutboundMessage {
+    ---
+    String[] features
+    // action名称
+    String action
+}
+
+class OutboundMessage.Response extends OutboundMessage {
+    ---
+    Set<String> features
+}
+
+abstract class InboundMessage extends NetworkMessage {
+    入站消息
+    ---
+    // 消息体
+    StreamInput streamInput
+}
+
+class InboundMessage.Request extends InboundMessage {
+    ---
+    String actionName
+    Set<String> features
+}
+
+class InboundMessage.Response extends InboundMessage {
+}
+
+class TransportStatus {
+    ---
+    第1位(最低位)表示这是请求消息还是响应消息
+    第2位表示成功还是异常
+    第3位表示消息是否被压缩
+    第4位表示是否是握手消息。
+}
+
+NetworkMessage #-left-- TransportStatus
+@enduml

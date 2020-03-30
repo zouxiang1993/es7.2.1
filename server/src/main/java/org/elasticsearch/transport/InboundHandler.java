@@ -40,6 +40,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 入站消息处理器
+ */
 public class InboundHandler {
 
     private static final Logger logger = LogManager.getLogger(InboundHandler.class);
@@ -118,13 +121,16 @@ public class InboundHandler {
             message.getStoredContext().restore();
             threadContext.putTransient("_remote_address", remoteAddress);
             if (message.isRequest()) {
+                // 处理来自其他节点的请求。
                 handleRequest(channel, (InboundMessage.Request) message, reference.length());
             } else {
+                // 处理来自其他节点的响应。
                 final TransportResponseHandler<?> handler;
                 long requestId = message.getRequestId();
                 if (message.isHandshake()) {
                     handler = handshaker.removeHandlerForHandshake(requestId);
                 } else {
+                    // 根据requestId获取 响应处理器
                     TransportResponseHandler<? extends TransportResponse> theHandler =
                         responseHandlers.onResponseReceived(requestId, messageListener);
                     if (theHandler == null && message.isError()) {
@@ -138,6 +144,7 @@ public class InboundHandler {
                     if (message.isError()) {
                         handlerResponseError(message.getStreamInput(), handler);
                     } else {
+                        // 处理响应。
                         handleResponse(remoteAddress, message.getStreamInput(), handler);
                     }
                     // Check the entire message has been read
@@ -164,6 +171,7 @@ public class InboundHandler {
             if (message.isHandshake()) {
                 handshaker.handleHandshake(version, features, channel, requestId, stream);
             } else {
+                // 根据action名称获取请求处理器
                 final RequestHandlerRegistry reg = getRequestHandler(action);
                 if (reg == null) {
                     throw new ActionNotFoundTransportException(action);
@@ -176,6 +184,7 @@ public class InboundHandler {
                 }
                 transportChannel = new TcpTransportChannel(outboundHandler, channel, action, requestId, version, features,
                     circuitBreakerService, messageLengthBytes, message.isCompress());
+                // 生成请求对象
                 final TransportRequest request = reg.newRequest(stream);
                 request.remoteAddress(new TransportAddress(channel.getRemoteAddress()));
                 // in case we throw an exception, i.e. when the limit is hit, we don't want to verify
@@ -185,6 +194,7 @@ public class InboundHandler {
                     throw new IllegalStateException("Message not fully read (request) for requestId [" + requestId + "], action [" + action
                         + "], available [" + stream.available() + "]; resetting");
                 }
+                // 将请求提交到对应的线程池中去执行
                 threadPool.executor(reg.getExecutor()).execute(new RequestHandler(reg, request, transportChannel));
             }
         } catch (Exception e) {
@@ -206,6 +216,7 @@ public class InboundHandler {
                                                               final TransportResponseHandler<T> handler) {
         final T response;
         try {
+            // 构造响应对象
             response = handler.read(stream);
             response.remoteAddress(new TransportAddress(remoteAddress));
         } catch (Exception e) {
@@ -213,6 +224,7 @@ public class InboundHandler {
                 "Failed to deserialize response from handler [" + handler.getClass().getName() + "]", e));
             return;
         }
+        // 提交到对应的线程池中去执行
         threadPool.executor(handler.executor()).execute(new AbstractRunnable() {
             @Override
             public void onFailure(Exception e) {

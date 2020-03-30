@@ -242,6 +242,7 @@ public abstract class TcpTransport extends AbstractLifecycleComponent implements
             if (isClosing.get()) {
                 throw new NodeNotConnectedException(node, "connection already closed");
             }
+            // 先根据options.type()得到该类型的所有TCP连接，再在里面轮询选择一个
             TcpChannel channel = channel(options.type());
             outboundHandler.sendRequest(node, channel, requestId, action, request, options, getVersion(), compress, false);
         }
@@ -651,6 +652,7 @@ public abstract class TcpTransport extends AbstractLifecycleComponent implements
 
     /**
      * Handles inbound message that has been decoded.
+     * 处理入站消息!!!
      *
      * @param channel the channel the message is from
      * @param message the message

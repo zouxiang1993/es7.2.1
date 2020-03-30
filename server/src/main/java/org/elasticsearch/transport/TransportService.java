@@ -71,6 +71,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * 传输层服务。其他模块需要与其他节点通信都通过这个类来进行。
+ */
 public class TransportService extends AbstractLifecycleComponent implements TransportMessageListener, TransportConnectionListener {
     private static final Logger logger = LogManager.getLogger(TransportService.class);
 
@@ -614,9 +617,12 @@ public class TransportService extends AbstractLifecycleComponent implements Tran
         }
         DiscoveryNode node = connection.getNode();
 
+        // 将当前的执行上下文与handler封装到一起，使得当ResponseHandler被回调时，也能在正确的上下文中执行。
         Supplier<ThreadContext.StoredContext> storedContextSupplier = threadPool.getThreadContext().newRestorableContext(true);
         ContextRestoreResponseHandler<T> responseHandler = new ContextRestoreResponseHandler<>(storedContextSupplier, handler);
+
         // TODO we can probably fold this entire request ID dance into connection.sendReqeust but it will be a bigger refactoring
+        // 生成一个递增的requestId, 再保存requestId-->responseHandler的映射关系。
         final long requestId = responseHandlers.add(new Transport.ResponseContext<>(responseHandler, connection, action));
         final TimeoutHandler timeoutHandler;
         if (options.timeout() != null) {
