@@ -3,6 +3,9 @@
 class MetaData{
     集群元数据
     --
+    -String clusterUUID
+    -boolean clusterUUIDCommitted
+    -long version
     -CoordinationMetaData coordinationMetaData
     // 集群配置
     -Settings settings

@@ -2,41 +2,66 @@
 class RoutingTable{
     // 全局的路由表，
     // 封装了所有Index的路由信息
+    ---
+    Map<String, IndexRoutingTable> indicesRouting
 }
 
 class IndexRoutingTable{
     // 封装了单个索引的路由信息
     ---
+    // 索引信息
+    Index index
+    // ??
+    ShardShuffler shuffler
+    // ??
+    ImmutableOpenIntMap<IndexShardRoutingTable> shards
+    // ??
+    List<ShardRouting> allActiveShards
 }
 
 class IndexShardRoutingTable{
     // 封装了单个分片的所有副本实例
     ---
+    // 分片id
     -ShardId shardId
+    // 主副本
     -ShardRouting primary
+    // 所有的从副本
     -List<ShardRouting> replicas
+    // 所有的副本(主+从)
     -List<ShardRouting> shards
+    // 所有的活跃副本(STARTED + RELOCATING)
     -List<ShardRouting> activeShards
     -List<ShardRouting> assignedShards
+    // 所有的(INITIALIZING + RELOCATING)的副本
+    -List<ShardRouting> allInitializingShards
     -boolean allShardsStarted
 }
 
 class ShardRouting{
     // 单个副本的路由信息
     ---
+    // 所属分片id
     -ShardId shardId
     // 当前处在哪个节点上
     -String currentNodeId
     // 正在向哪个节点迁移
     -String relocatingNodeId
-    // 是否是主分片
+    // true表示主副本，false表示从副本(secondary)
     -boolean primary
+    // 期望的分片大小
+    long expectedShardSize
     --
     // 当前的状态
     -ShardRoutingState state
     // 在不同的状态持有以下不同的字段
+
+    // recovery状态下,数据来源
     -RecoverySource recoverySource
+    // unassigned状态下，未分配的原因
     -UnassignedInfo unassignedInfo
+    // 每一次分配(allocation)的一个唯一标识
+    // 一次分配是指一个副本从unassigned到initializing/relocating的过程。
     -AllocationId allocationId
 }
 
@@ -51,16 +76,21 @@ class Index{
 }
 
 enum ShardRoutingState{
+    ---
+    // 还没有分配到任何节点上
     UNASSIGNED
+    // 正在初始化(可能是从其他副本或者gateway中recovery)
     INITIALIZING
+    // 已启动，正常工作
     STARTED
+    // 正在向其他节点迁移
     RELOCATING
 }
 
 RoutingTable "1" *--right-- "n" IndexRoutingTable
 IndexRoutingTable "1" *-- "n" IndexShardRoutingTable
 IndexShardRoutingTable "1" *--left-- "n" ShardRouting
-ShardRouting *-- ShardId
+
 ShardId *-- Index
 ShardRouting *-- ShardRoutingState
 

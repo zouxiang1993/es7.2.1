@@ -56,13 +56,13 @@ import static java.util.Collections.emptyMap;
 public class IndexShardRoutingTable implements Iterable<ShardRouting> {
 
     final ShardShuffler shuffler;
-    final ShardId shardId;
+    final ShardId shardId; // 分片id
 
     final ShardRouting primary;
     final List<ShardRouting> primaryAsList;
     final List<ShardRouting> replicas;
-    final List<ShardRouting> shards;
-    final List<ShardRouting> activeShards;
+    final List<ShardRouting> shards;  // 所有的副本(主+从)
+    final List<ShardRouting> activeShards; // 所有的活跃副本(STARTED + RELOCATING)
     final List<ShardRouting> assignedShards;
     final Set<String> allAllocationIds;
     final boolean allShardsStarted;
@@ -75,7 +75,7 @@ public class IndexShardRoutingTable implements Iterable<ShardRouting> {
      * The initializing list, including ones that are initializing on a target node because of relocation.
      * If we can come up with a better variable name, it would be nice...
      */
-    final List<ShardRouting> allInitializingShards;
+    final List<ShardRouting> allInitializingShards;  // 所有的(INITIALIZING + RELOCATING)的副本
 
     IndexShardRoutingTable(ShardId shardId, List<ShardRouting> shards) {
         this.shardId = shardId;

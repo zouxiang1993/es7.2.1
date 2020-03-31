@@ -23,6 +23,8 @@ import java.util.List;
 
 /**
  * A shuffler for shards whose primary goal is to balance load.
+ *
+ * 对一个List<ShardRouting>洗牌
  */
 public abstract class ShardShuffler {
 
