@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class PeersRequest extends TransportRequest {
-    private final DiscoveryNode sourceNode;
-    private final List<DiscoveryNode> knownPeers;
+    private final DiscoveryNode sourceNode; // 表示自己的节点
+    private final List<DiscoveryNode> knownPeers; // 自己已知的所有master节点
 
     public PeersRequest(DiscoveryNode sourceNode, List<DiscoveryNode> knownPeers) {
         assert knownPeers.contains(sourceNode) == false : "local node is not a peer";

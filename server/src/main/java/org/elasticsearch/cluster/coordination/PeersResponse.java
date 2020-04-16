@@ -30,9 +30,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class PeersResponse extends TransportResponse {
-    private final Optional<DiscoveryNode> masterNode;
-    private final List<DiscoveryNode> knownPeers;
-    private final long term;
+    private final Optional<DiscoveryNode> masterNode; // 本轮的leader，如果不知道leader则为空。
+    private final List<DiscoveryNode> knownPeers;   // 自己已知的所有节点
+    private final long term;    // 任期号
 
     public PeersResponse(Optional<DiscoveryNode> masterNode, List<DiscoveryNode> knownPeers, long term) {
         assert masterNode.isPresent() == false || knownPeers.isEmpty();

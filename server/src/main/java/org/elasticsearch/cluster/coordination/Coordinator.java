@@ -673,8 +673,8 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
     @Override
     protected void doStart() {
         synchronized (mutex) {
-            CoordinationState.PersistedState persistedState = persistedStateSupplier.get();
-            coordinationState.set(new CoordinationState(settings, getLocalNode(), persistedState));
+            CoordinationState.PersistedState persistedState = persistedStateSupplier.get(); // 利用gateway模块读取PersistedState
+            coordinationState.set(new CoordinationState(settings, getLocalNode(), persistedState)); // 初始化CoordinationState
             peerFinder.setCurrentTerm(getCurrentTerm());
             configuredHostsResolver.start();
             final ClusterState lastAcceptedState = coordinationState.get().getLastAcceptedState();
@@ -1132,7 +1132,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
                     final ClusterState lastAcceptedState = coordinationState.get().getLastAcceptedState();
                     final boolean foundQuorum = CoordinationState.isElectionQuorum(expectedVotes, lastAcceptedState);
 
-                    if (foundQuorum) {
+                    if (foundQuorum) { // 已经发现了足够多的节点，且这些节点都感知不到当前leader的存在，因此可以开始选举。
                         if (electionScheduler == null) {
                             startElectionScheduler();
                         }
@@ -1149,7 +1149,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
     private void startElectionScheduler() {
         assert electionScheduler == null : electionScheduler;
 
-        if (getLocalNode().isMasterNode() == false) {
+        if (getLocalNode().isMasterNode() == false) { // 只有master-eligible才有资格发起选举
             return;
         }
 

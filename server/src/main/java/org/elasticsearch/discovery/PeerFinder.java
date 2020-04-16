@@ -162,9 +162,10 @@ public abstract class PeerFinder {
             final List<DiscoveryNode> knownPeers;
             if (active) {
                 assert leader.isPresent() == false : leader;
-                if (peersRequest.getSourceNode().isMasterNode()) {  // 如果是主备节点
+                if (peersRequest.getSourceNode().isMasterNode()) {  // 如果是master-eligible节点
                     startProbe(peersRequest.getSourceNode().getAddress());
                 }
+                // getKnownPeers里面全部是master-eligible节点
                 peersRequest.getKnownPeers().stream().map(DiscoveryNode::getAddress).forEach(this::startProbe);
                 knownPeers = getFoundPeersUnderLock();
             } else {
@@ -326,7 +327,7 @@ public abstract class PeerFinder {
 
     private class Peer {
         private final TransportAddress transportAddress;
-        private SetOnce<DiscoveryNode> discoveryNode = new SetOnce<>();
+        private SetOnce<DiscoveryNode> discoveryNode = new SetOnce<>(); // 表示对方节点
         private volatile boolean peersRequestInFlight;
 
         Peer(TransportAddress transportAddress) {
@@ -371,6 +372,7 @@ public abstract class PeerFinder {
             transportAddressConnector.connectToRemoteMasterNode(transportAddress, new ActionListener<DiscoveryNode>() {
                 @Override
                 public void onResponse(DiscoveryNode remoteNode) {
+                    // 运行到这里时，对方节点一定是master-eligible节点.
                     assert remoteNode.isMasterNode() : remoteNode + " is not master-eligible";
                     assert remoteNode.equals(getLocalNode()) == false : remoteNode + " is the local node";
                     synchronized (mutex) {
@@ -402,7 +404,7 @@ public abstract class PeerFinder {
             assert peersRequestInFlight == false : "PeersRequest already in flight";
             assert active;
 
-            final DiscoveryNode discoveryNode = getDiscoveryNode();
+            final DiscoveryNode discoveryNode = getDiscoveryNode(); // 对方节点
             assert discoveryNode != null : "cannot request peers without first connecting";
 
             if (discoveryNode.equals(getLocalNode())) {
@@ -436,7 +438,7 @@ public abstract class PeerFinder {
                         response.getKnownPeers().stream().map(DiscoveryNode::getAddress).forEach(PeerFinder.this::startProbe);
                     }
 
-                    if (response.getMasterNode().equals(Optional.of(discoveryNode))) {
+                    if (response.getMasterNode().equals(Optional.of(discoveryNode))) { // 如果对方节点是当前的leader
                         // Must not hold lock here to avoid deadlock
                         assert holdsLock() == false : "PeerFinder mutex is held in error";
                         onActiveMasterFound(discoveryNode, response.getTerm());

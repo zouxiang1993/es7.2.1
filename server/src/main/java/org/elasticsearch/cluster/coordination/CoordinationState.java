@@ -48,12 +48,12 @@ public class CoordinationState {
     private final PersistedState persistedState;
 
     // transient state 当前节点的非持久化状态
-    private VoteCollection joinVotes;
+    private VoteCollection joinVotes; // 选主时,已经收到的选票
     private boolean startedJoinSinceLastReboot;
-    private boolean electionWon;
+    private boolean electionWon; // 在这一任期内，是否已经赢得了选举
     private long lastPublishedVersion;
     private VotingConfiguration lastPublishedConfiguration;
-    private VoteCollection publishVotes;
+    private VoteCollection publishVotes; //
 
     public CoordinationState(Settings settings, DiscoveryNode localNode, PersistedState persistedState) {
         this.localNode = localNode;
