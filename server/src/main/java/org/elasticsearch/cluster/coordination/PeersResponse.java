@@ -35,7 +35,7 @@ public class PeersResponse extends TransportResponse {
     private final long term;    // 任期号
 
     public PeersResponse(Optional<DiscoveryNode> masterNode, List<DiscoveryNode> knownPeers, long term) {
-        assert masterNode.isPresent() == false || knownPeers.isEmpty();
+        assert masterNode.isPresent() == false || knownPeers.isEmpty(); // leader 和 knownPeers 不可能同时存在
         this.masterNode = masterNode;
         this.knownPeers = knownPeers;
         this.term = term;

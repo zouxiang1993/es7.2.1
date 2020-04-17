@@ -95,7 +95,7 @@ public abstract class PeerFinder {
     private volatile long currentTerm;
     private boolean active;
     private DiscoveryNodes lastAcceptedNodes;
-    private final Map<TransportAddress, Peer> peersByAddress = new LinkedHashMap<>();
+    private final Map<TransportAddress, Peer> peersByAddress = new LinkedHashMap<>(); // 已经探测过的节点。
     private Optional<DiscoveryNode> leader = Optional.empty();
     private volatile List<TransportAddress> lastResolvedAddresses = emptyList();
 
@@ -130,6 +130,7 @@ public abstract class PeerFinder {
         onFoundPeersUpdated(); // trigger a check for a quorum already
     }
 
+    // 只有在已知leader的情况下，才会关闭PeerFinder
     public void deactivate(DiscoveryNode leader) {
         final boolean peersRemoved;
         synchronized (mutex) {
@@ -258,7 +259,7 @@ public abstract class PeerFinder {
      */
     private boolean handleWakeUp() {
         assert holdsLock() : "PeerFinder mutex not held";
-
+        // 已知的节点中，是否存在连接不上了的。
         final boolean peersRemoved = peersByAddress.values().removeIf(Peer::handleWakeUp);
 
         if (active == false) {
@@ -321,7 +322,7 @@ public abstract class PeerFinder {
             logger.trace("startProbe({}) not probing local node", transportAddress);
             return;
         }
-
+        // 只有在之前没有探测过该节点的情况下，才会进行探测。
         peersByAddress.computeIfAbsent(transportAddress, this::createConnectingPeer);
     }
 
@@ -433,7 +434,7 @@ public abstract class PeerFinder {
                         }
 
                         peersRequestInFlight = false;
-
+                        // 开始探测新的节点
                         response.getMasterNode().map(DiscoveryNode::getAddress).ifPresent(PeerFinder.this::startProbe);
                         response.getKnownPeers().stream().map(DiscoveryNode::getAddress).forEach(PeerFinder.this::startProbe);
                     }

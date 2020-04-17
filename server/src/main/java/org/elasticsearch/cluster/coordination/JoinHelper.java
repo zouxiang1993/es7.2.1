@@ -399,6 +399,7 @@ public class JoinHelper {
         }
     }
 
+    // 节点处于不同模式下，处理JoinRequest的方式不同。
     class LeaderJoinAccumulator implements JoinAccumulator {
         @Override
         public void handleJoinRequest(DiscoveryNode sender, JoinCallback joinCallback) {

@@ -351,9 +351,9 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
 
     private void updateMaxTermSeen(final long term) {
         synchronized (mutex) {
-            maxTermSeen = Math.max(maxTermSeen, term);
+            maxTermSeen = Math.max(maxTermSeen, term); // 更新任期号
             final long currentTerm = getCurrentTerm();
-            if (mode == Mode.LEADER && maxTermSeen > currentTerm) {
+            if (mode == Mode.LEADER && maxTermSeen > currentTerm) { // 如果是leader且发现了更大的任期号，则退位成candidate。
                 // Bump our term. However if there is a publication in flight then doing so would cancel the publication, so don't do that
                 // since we check whether a term bump is needed at the end of the publication too.
                 if (publicationInProgress()) {
@@ -372,6 +372,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
         }
     }
 
+    // 开始真正的选举
     private void startElection() {
         synchronized (mutex) {
             // The preVoteCollector is only active while we are candidate, but it does not call this method with synchronisation, so we have
@@ -464,7 +465,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
 
         final ClusterState stateForJoinValidation = getStateForMasterService();
 
-        if (stateForJoinValidation.nodes().isLocalNodeElectedMaster()) {
+        if (stateForJoinValidation.nodes().isLocalNodeElectedMaster()) { // 如果之前就已经是Leader了。
             onJoinValidators.forEach(a -> a.accept(joinRequest.getSourceNode(), stateForJoinValidation));
             if (stateForJoinValidation.getBlocks().hasGlobalBlock(STATE_NOT_RECOVERED_BLOCK) == false) {
                 // we do this in a couple of places including the cluster update thread. This one here is really just best effort
@@ -577,7 +578,7 @@ public class Coordinator extends AbstractLifecycleComponent implements Discovery
         preVoteCollector.update(getPreVoteResponse(), getLocalNode());
 
         assert leaderChecker.leader() == null : leaderChecker.leader();
-        followersChecker.updateFastResponseState(getCurrentTerm(), mode);
+        followersChecker.updateFastResponseState(getCurrentTerm(), mode); // 启动FollowersChecker以保持自己的Leader地位。
     }
 
     void becomeFollower(String method, DiscoveryNode leaderNode) {

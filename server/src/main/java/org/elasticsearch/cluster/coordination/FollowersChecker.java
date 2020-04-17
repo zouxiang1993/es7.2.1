@@ -128,6 +128,10 @@ public class FollowersChecker {
 
     /**
      * Update the set of known nodes, starting to check any new ones and stopping checking any previously-known-but-now-unknown ones.
+     *
+     * 如果节点赢得了选举，在关闭CandidateJoinAccumulator的时候，会通过masterService发布新的集群状态，
+     * 这时会在publish中触发这个setCurrentNodes方法，设置新的follower检查节点。
+     * @see JoinHelper.CandidateJoinAccumulator#close(org.elasticsearch.cluster.coordination.Coordinator.Mode)
      */
     public void setCurrentNodes(DiscoveryNodes discoveryNodes) {
         synchronized (mutex) {
