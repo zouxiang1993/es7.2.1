@@ -1,0 +1,54 @@
+@startuml
+class DiscoveryNodes {
+    持有集群中所有的DiscoveryNode，
+    并提供便捷的访问方法。
+    ---
+    // 当前的leader的 nodeId
+    String masterNodeId;
+    // 自身节点的nodeId
+    String localNodeId;
+    // 所有的节点信息，nodeId到节点的映射
+    Map<String, DiscoveryNode> nodes
+    Map<String, DiscoveryNode> dataNodes
+    Map<String, DiscoveryNode> masterNodes
+    Map<String, DiscoveryNode> ingestNodes
+    ---
+    // 可以根据"_local", "_master", "data:true" ...
+    // 等各种形式的字符串来解析出对应的节点
+    String[] resolveNodes(String... nodes)
+}
+
+class DiscoveryNode {
+    代表集群中的一个节点
+    ---
+    // 节点名称
+    -String nodeName;
+    // 一个唯一的、持久的id。会存储到元数据中，永远都不会改变。
+    -String nodeId;
+    // 一个临时的id。每次节点重启都会变化。
+    -String ephemeralId;
+    -String hostName;
+    -String hostAddress;
+    // 可用来通信的地址
+    -TransportAddress address;
+    -Map<String, String> attributes;
+    -Version version;
+    // 节点的功能角色
+    -Set<Role> roles;
+}
+
+enum Role {
+    一个节点可能同时具备多个角色。
+    如果一个节点不具备任何一个Role，那么它就是一个<font color="red"><b>协调节点
+    ---
+    // 参与选举的节点
+    MASTER,
+    // 存储数据的节点
+    DATA,
+    // 摄取节点
+    INGEST
+}
+
+DiscoveryNodes *-right-- DiscoveryNode
+DiscoveryNode -- Role
+@enduml

@@ -352,6 +352,7 @@ public class DiscoveryNode implements Writeable, ToXContentFragment {
 
     @Override
     public int hashCode() {
+        // TODO: 两个节点几乎不可能具有相同的ephemeralId，就可以用来判断相等???????
         // we only need to hash the id because it's highly unlikely that two nodes
         // in our system will have the same id but be different
         // This is done so that this class can be used efficiently as a key in a map

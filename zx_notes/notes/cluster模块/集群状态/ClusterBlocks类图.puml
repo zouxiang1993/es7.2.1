@@ -4,7 +4,7 @@ class ClusterBlocks {
     // 表示当前集群层面和索引层面的阻塞
     // 以防止对集群的脏操作
     ---
-    // 集群层面的阻塞
+    // 全局的阻塞(集群层面)
     Set<ClusterBlock> global
     // 每个索引上的阻塞
     Map<String, Set<ClusterBlock>> indicesBlocks
@@ -14,10 +14,13 @@ class ClusterBlock{
     ---
     -int id
     -String uuid
+    -String description
     -EnumSet<ClusterBlockLevel> levels
     // 是否可重试
     -boolean retryable
+    // 禁用全局的状态持久化？？
     -boolean disableStatePersistence
+    // ??
     -boolean allowReleaseResources
     // HTTP 状态码
     -RestStatus status
@@ -36,5 +39,6 @@ enum ClusterBlockLevel{
 }
 
 ClusterBlocks *-- "n" ClusterBlock
+ClusterBlock *-right-- ClusterBlockLevel
 
 @enduml
